@@ -1,0 +1,4 @@
+boto3
+aws-lambda-powertools[tracer]
+python-json-logger
+pytest

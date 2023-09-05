@@ -1,17 +1,13 @@
-## My Project
+## Engineering quickstarts for serverless and container applications
 
-TODO: Fill this README out!
+This repo holds scaffolding and project starter files to quickly launch a cloud-native project on AWS. The hierarchy is language with subfolders for different frameworks and tool combinations. Each project scaffolding provides several examples for common use cases. As an example, if DynamoDB is used, examples would include endpoints to read and write to a table using filters and conditional expressions.
 
-Be sure to:
+## Table of contents
+* [Python](python/README.md)
 
-* Change the title in this README
-* Edit your repository description on GitHub
 
-## Security
+[Contributing](CONTRIBUTING.md)
 
-See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
+[License](LICENSE)
 
-## License
-
-This library is licensed under the MIT-0 License. See the LICENSE file.
-
+[Code of Conduct](CODE_OF_CONDUCT.md)

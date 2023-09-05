@@ -1,0 +1,71 @@
+version: 2.1
+
+orbs:
+  aws-cli: circleci/aws-cli@3.1.4
+  ggshield: gitguardian/ggshield@1.1.4
+  serverless-framework: circleci/serverless-framework@2.0.1
+  snyk: snyk/snyk@1.4.0
+
+workflows:
+  build_and_deploy:
+    jobs:
+      - ggshield/scan:
+          name: secrets_detection
+          revision: $CIRCLE_SHA1
+          context:
+            - test-dibs
+      - static_analysis:
+          name: sast
+          context:
+            - test-dibs
+          requires:
+            - secrets_detection
+      - test:
+          name: test
+      - build:
+          name: build
+          requires:
+            - test
+      - deploy:
+          name: deploy
+          requires:
+            - build
+
+jobs:
+  build:
+    docker:
+      - image: cimg/python:3.9.16-node
+    steps:
+      - checkout
+      - run:
+          name: Install Deps
+          command: pip install -r requirements.txt
+  static_analysis:
+    docker:
+      - image: cimg/python:3.9.16-node
+    steps:
+      - checkout
+      - run:
+          name: Install Deps
+          command: pip install -r requirements.txt
+      - snyk/scan:
+          severity-threshold: critical
+  test:
+    docker:
+      - image: cimg/python:3.9.16-node
+    steps:
+      - checkout
+      - run:
+          name: Run unit tests
+          command: |
+            pip install -r requirements.txt
+            pytest
+  deploy:
+    executor: serverless-framework/default
+    steps:
+      - checkout
+      - aws-cli/setup
+      - serverless-framework/setup
+      - run:
+          name: Deploy to AWS Lambda
+          command: serverless deploy -v

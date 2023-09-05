@@ -1,0 +1,16 @@
+version: 0.2
+
+phases:
+    install:
+        on-failure: ABORT
+        commands:
+            – yum update
+            – npm install -g serverless
+    build:
+        commands:
+            – cd python-powertools-sls-main
+            - pip install -r requirements.txt
+    post_build:
+        commands:
+            - cd python-powertools-sls-main
+            - sls deploy
