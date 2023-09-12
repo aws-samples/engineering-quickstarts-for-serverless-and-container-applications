@@ -1,0 +1,56 @@
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
+
+service: cart
+# app and org for use with dashboard.serverless.com
+#app: your-app-name
+#org: your-org-name
+
+# You can pin your service to only deploy with a specific Serverless version
+# Check out our docs for more details
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: java11
+  tracing:
+    lambda: true
+
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action:
+            - "dynamo:*"
+          Resource:
+            - "*"
+
+plugins:
+  - serverless-offline
+
+# you can add packaging information here
+package:
+  artifact: target/cart-dev-aws.jar
+
+functions:
+  cart_microservice:
+    layers:
+      - arn:aws:lambda:${aws:region}:901920570463:layer:aws-otel-java-wrapper-amd64-ver-1-21-1:1
+    environment:
+      DYNAMO_TABLE: "frontend_monotable"
+    handler: com.scale_aws.StreamLambdaHandler::handleRequest
+    events:
+      - httpApi:
+          method: '*'
+          path: '/{proxy+}'
+

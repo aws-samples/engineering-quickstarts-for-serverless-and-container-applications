@@ -1,0 +1,58 @@
+﻿# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
+
+
+service: dibs-asp-dotnet-mac # NOTE: update this with your service name
+
+provider:
+  name: aws
+  runtime: dotnet6
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action: 
+            - 'dynamodb:*'
+          Resource: 
+            - 'arn:aws:dynamodb::*'
+
+package:
+  individually: true
+
+functions:
+  hello-world:
+    handler: dibs-asp-dotnet-mac::dibs_asp_dotnet_mac.LambdaEntryPoint::FunctionHandlerAsync
+    package:
+      artifact: bin/release/net6.0/example.zip
+    events:
+      - httpApi: '*'
+        
+resources:
+  Resources:
+    inventoryTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: inventory
+        AttributeDefinitions:
+          - AttributeName: pk
+            AttributeType: S
+          - AttributeName: sk
+            AttributeType: S
+        KeySchema:
+          - AttributeName: pk
+            KeyType: HASH
+          - AttributeName: sk
+            KeyType: RANGE
+        ProvisionedThroughput: 
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1

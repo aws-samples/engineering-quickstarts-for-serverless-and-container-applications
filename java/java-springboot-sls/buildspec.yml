@@ -1,0 +1,22 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      java: corretto11
+    commands:
+      # Upgrade AWS CLI to the latest version
+      - pip install --upgrade awscli
+      - npm install -g serverless
+  pre_build:
+    commands:
+      # Maven, Clean, Compile, and Test
+      - echo Test started on `date`
+      - mvn clean compile test
+  build:
+    commands:
+      - echo Build started on `date`
+      - mvn -U package
+  post_build:
+    commands:
+      - serverless deploy

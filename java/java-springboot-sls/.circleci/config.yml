@@ -1,0 +1,50 @@
+version: 2.1
+
+orbs:
+  ggshield: gitguardian/ggshield@1.1.4
+  snyk: snyk/snyk@1.4.0
+
+workflows:
+  build_and_deploy:
+    jobs:
+      - ggshield/scan:
+          name: secrets_detection
+          revision: $CIRCLE_SHA1
+          context:
+            - dobra
+      - static_analysis:
+          context:
+            - dobra
+          matrix:
+            parameters:
+              target-file:
+                - pom.xml
+          requires:
+            - secrets_detection
+      - build:
+          requires:
+            - static_analysis
+
+jobs:
+  build:
+    docker:
+      - image: cimg/openjdk:11.0
+    steps:
+      - checkout
+      - run:
+          name: Build JAR
+          command: |
+            mvn -U clean package
+      - store_artifacts:
+          path: target
+  static_analysis:
+    parameters:
+      target-file:
+        type: string
+    docker:
+      - image: cimg/openjdk:11.0
+    steps:
+      - checkout
+      - snyk/scan:
+          severity-threshold: high
+          target-file: << parameters.target-file >>

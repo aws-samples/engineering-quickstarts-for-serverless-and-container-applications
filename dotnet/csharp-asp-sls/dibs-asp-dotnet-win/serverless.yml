@@ -1,0 +1,31 @@
+﻿# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
+
+service: dibs-asp-dotnet-win # NOTE: update this with your service name
+
+provider:
+  name: aws
+  runtime: dotnet6
+  memorySize: 2048
+  timeout: 15
+  cors: true
+
+package:
+  individually: true
+
+functions:
+  hello-world:
+    handler: dibs-asp-dotnet::dibs_asp_dotnet.LambdaEntryPoint::FunctionHandlerAsync
+    tracing: Active
+    events:
+      - httpApi: '*'
