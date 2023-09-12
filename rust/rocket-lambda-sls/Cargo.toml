@@ -1,0 +1,32 @@
+[package]
+name = "rocket-lambda-sls"
+version = "0.1.0"
+edition = "2021"
+
+# Starting in Rust 1.62 you can use `cargo add` to add dependencies 
+# to your project.
+#
+# If you're using an older Rust version,
+# download cargo-edit(https://github.com/killercup/cargo-edit#installation) 
+# to install the `add` subcommand.
+#
+# Running `cargo add DEPENDENCY_NAME` will
+# add the latest version of a dependency to the list,
+# and it will keep the alphabetic ordering for you.
+
+[dependencies]
+lambda_http = { version = "0.7", default-features = false, features = ["apigw_rest"] }
+lambda_runtime = "0.7"
+lambda-web = { version = "0.2.0", features=["rocket05"] }
+rocket = { version = "0.5.0-rc.2", features = ["json"] }
+serde = "1.0"
+serde_json = "1.0"
+aws-config = "0.52.0"
+aws-sdk-dynamodb = "0.22.0"
+tokio = { version = "1", features = ["macros"] }
+tracing = { version = "0.1", features = ["log"] }
+tracing-subscriber = { version = "0.3", default-features = false, features = ["fmt"] }
+opentelemetry = "0.18.0"
+opentelemetry-aws = "0.6.0"
+opentelemetry-http =  "0.7.0"
+
