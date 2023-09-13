@@ -45,18 +45,18 @@ Once you have edited your template and code you can deploy your application usin
 
 Install Amazon.Lambda.Tools Global Tools if not already installed.
 Install the Amazon.Lambda.Templates to have the templates used for ASP.NET.
-```
+```sh
     dotnet tool install -g Amazon.Lambda.Tools
     dotnet new -i Amazon.Lambda.Templates
 ```
 
 If already installed check if new version is available.
-```
+```sh
     dotnet tool update -g Amazon.Lambda.Tools
 ```
 
 Install Project dependencies if not already done
-```
+```sh
 dotnet add package AWSSDK.DynamoDBv2
 dotnet add package AWSSDK.Lambda
 dotnet add package Amazon.Lambda.AspNetCoreServer
@@ -67,13 +67,13 @@ dotnet add package AWS.Lambda.Powertools.Metrics
 ```
 
 Execute unit tests
-```
+```sh
     cd "dibs-asp-dotnet/test/dibs-asp-dotnet.Tests"
     dotnet test
 ```
 
 Deploy application
-```
+```sh
     cd "dibs-asp-dotnet/src/dibs-asp-dotnet"
     dotnet lambda deploy-serverless
 ```

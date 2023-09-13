@@ -19,12 +19,12 @@ To use this template, you need to have .NET 6.0 or higher, Serverless Framework,
 and AWS CLI installed on your machine. You also need to have an AWS account
 and configured credentials for serverless framework to deploy in AWS.
 
-To get started, clone the repository, and run ``
-to install the Python dependencies. Then, you can modify the `serverless.yml`
+To get started, clone the repository, and run `dotnet restore`
+to install the dotnet dependencies. Then, you can modify the `serverless.yml`
 file and the various classes and files in the project to your needs.
 
 Lambda Powertools is a suite of .NET libraries that makes it easier to implement
 best practices for serverless applications, like distributed logging, tracing,
 metrics, and error handling. It also provides native integration and fast load
-times with .NET 6. You can learn more about Lambda Powertools here: [.NET Lambda Powertools]()
+times with .NET 6. You can learn more about Lambda Powertools here: [.NET Lambda Powertools](https://github.com/aws-powertools/powertools-lambda-dotnet).
 

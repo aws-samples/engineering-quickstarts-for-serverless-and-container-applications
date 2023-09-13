@@ -18,8 +18,7 @@ file in GitHub.
 API Gateway supports the original REST API and the new HTTP API.
 In addition HTTP API supports 2 different payload formats. When using the 2.0
 format the base class of `LambdaEntryPoint` must be `Amazon.Lambda.AspNetCoreServer.APIGatewayHttpApiV2ProxyFunction`.
-**Note:** when using the `AWS::Serverless::Function` CloudFormation resource with an event type of `HttpApi` the default payload
-format is 2.0 so the base class of `LambdaEntryPoint` must be `Amazon.Lambda.AspNetCoreServer.APIGatewayHttpApiV2ProxyFunction`.
+**Note:** when using the `AWS::Serverless::Function` CloudFormation resource with an event type of `HttpApi` the default payload format is 2.0 so the base class of `LambdaEntryPoint` must be `Amazon.Lambda.AspNetCoreServer.APIGatewayHttpApiV2ProxyFunction`.
 
 ### Project Files ###
 
@@ -45,24 +44,24 @@ Once you have edited your template and code you can deploy your application usin
 
 Install Amazon.Lambda.Tools Global Tools if not already installed.
 Install the Amazon.Lambda.Templates to have the templates used for ASP.NET.
-```
+```sh
     dotnet tool install -g Amazon.Lambda.Tools
     dotnet new -i Amazon.Lambda.Templates
 ```
 
 If already installed check if new version is available.
-```
+```sh
     dotnet tool update -g Amazon.Lambda.Tools
 ```
 
 If you're using the template, you can simply use restore to sync the dependencies
 in the repository of the C# Project.
-```
+```sh
 dotnet restore
 ```
 
 Install Project dependencies if not already done
-```
+```sh
 dotnet add package AWSSDK.DynamoDBv2
 dotnet add package AWSSDK.Lambda
 dotnet add package Amazon.Lambda.AspNetCoreServer
@@ -74,7 +73,7 @@ dotnet add package AWS.Lambda.Powertools.Metrics
 ```
 
 Build and Deploy application
-```
+```sh
     dotnet lambda package --configuration release --framework net6.0 --output-package bin/release/net6.0/hello.zip
     sls deploy
 ```
