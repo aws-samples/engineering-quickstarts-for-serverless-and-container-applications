@@ -4,7 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>dibs_asp_dotnet_mac</RootNamespace>
+    <RootNamespace>asp_dotnet_mac</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

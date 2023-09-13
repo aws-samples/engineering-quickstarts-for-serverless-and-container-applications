@@ -3,9 +3,9 @@ using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.Runtime;
 using Microsoft.AspNetCore.Mvc;
-using dibs_asp_dotnet_mac.Models;
+using asp_dotnet_mac.Models;
 
-namespace dibs_asp_dotnet_mac.Controllers
+namespace asp_dotnet_mac.Controllers
 {
     [ApiController]
     [Route("/ddb/")]

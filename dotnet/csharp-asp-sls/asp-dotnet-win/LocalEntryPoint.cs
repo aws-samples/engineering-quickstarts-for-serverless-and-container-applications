@@ -1,4 +1,4 @@
-namespace dibs_asp_dotnet_win;
+namespace asp_dotnet_win;
 
 /// <summary>
 /// The Main function can be used to run the ASP.NET Core application locally using the Kestrel webserver.

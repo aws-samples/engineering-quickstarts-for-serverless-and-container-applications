@@ -1,6 +1,6 @@
 ﻿using Amazon.DynamoDBv2.DataModel;
 
-namespace dibs_asp_dotnet_mac.Models;
+namespace asp_dotnet_mac.Models;
 
 // Focusing on the object persistence model to make it as seamless and integrated with the language as possible
 // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DotNetSDKHighLevel.html

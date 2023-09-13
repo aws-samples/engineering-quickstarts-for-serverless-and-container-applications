@@ -1,4 +1,4 @@
-namespace dibs_asp_dotnet_win;
+namespace asp_dotnet_win;
 
 /// <summary>
 /// This class extends from APIGatewayProxyFunction which contains the method FunctionHandlerAsync which is the 

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace dibs_asp_dotnet_win.Controllers;
+namespace asp_dotnet_win.Controllers;
 
 [Route("api/[controller]")]
 public class ValuesController : ControllerBase

@@ -3,7 +3,7 @@ using AWS.Lambda.Powertools.Logging;
 using AWS.Lambda.Powertools.Metrics;
 using AWS.Lambda.Powertools.Tracing;
 
-namespace dibs_asp_dotnet_mac.Controllers;
+namespace asp_dotnet_mac.Controllers;
 
 [ApiController]
 [Route("/hello/")]

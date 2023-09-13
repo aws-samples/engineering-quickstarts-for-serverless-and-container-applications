@@ -3,7 +3,7 @@ using Amazon.XRay.Recorder.Handlers.AwsSdk;
 using AWS.Lambda.Powertools.Logging;
 using AWS.Lambda.Powertools.Tracing;
 
-namespace dibs_asp_dotnet_mac;
+namespace asp_dotnet_mac;
 
 public class Startup
 {

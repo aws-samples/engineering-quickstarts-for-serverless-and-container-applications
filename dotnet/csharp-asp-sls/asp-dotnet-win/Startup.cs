@@ -1,4 +1,4 @@
-namespace dibs_asp_dotnet_win;
+namespace asp_dotnet_win;
 
 public class Startup
 {

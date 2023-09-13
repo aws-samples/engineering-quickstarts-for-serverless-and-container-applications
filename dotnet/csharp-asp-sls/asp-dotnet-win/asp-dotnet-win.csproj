@@ -10,7 +10,7 @@
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <!-- Generate ready to run images during publishing to improve cold start time. -->
     <PublishReadyToRun>true</PublishReadyToRun>
-    <RootNamespace>dibs_asp_dotnet_win</RootNamespace>
+    <RootNamespace>asp_dotnet_win</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'dibs-asp-dotnet' " />
   <ItemGroup>

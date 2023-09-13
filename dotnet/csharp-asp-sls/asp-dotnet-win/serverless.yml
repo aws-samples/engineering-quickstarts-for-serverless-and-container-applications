@@ -11,7 +11,7 @@
 #
 # Happy Coding!
 
-service: dibs-asp-dotnet-win # NOTE: update this with your service name
+service: asp-dotnet-win # NOTE: update this with your service name
 
 provider:
   name: aws
@@ -25,7 +25,7 @@ package:
 
 functions:
   hello-world:
-    handler: dibs-asp-dotnet::dibs_asp_dotnet.LambdaEntryPoint::FunctionHandlerAsync
+    handler: asp-dotnet::asp_dotnet.LambdaEntryPoint::FunctionHandlerAsync
     tracing: Active
     events:
       - httpApi: '*'
