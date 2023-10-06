@@ -14,10 +14,6 @@ sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl && \
 NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" && \
 brew install derailed/k9s/k9s
 
-# Install NVM
-RUN wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash && nvm install --latest
-
 # Install Serverless CLI
-RUN npm i -g serverless
-
-# 
+RUN nvm install --latest; exit 0
+RUN npm -i g serverless
