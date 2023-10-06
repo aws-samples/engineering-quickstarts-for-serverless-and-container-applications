@@ -1,0 +1,34 @@
+image:
+  file: .gitpod.Dockerfile
+# Commands that will run on workspace start
+tasks:
+
+github:
+  prebuilds:
+    master: true
+    addBadge: true
+    
+
+#tasks:
+#  - name: AWS Auth
+#    command: |
+#      if [[ -z "${GP_AWS_CONNECTION_ARN}" ]]; then
+#        echo "The GP_AWS_CONNECTION_ARN environment variable is not set or empty. You must set this to the ARN of the AWS role that should be granted to this workspace."
+#        exit 1
+#      else
+#        echo "Authenticating to AWS account using the Gitpod Identity Provider..."
+#        echo "AWS IAM Role: ${GP_AWS_CONNECTION_ARN}"
+#      fi
+#      gp idp login aws --role-arn $GP_AWS_CONNECTION_ARN
+#      echo "Checking AWS identity..."
+#      aws sts get-caller-identity
+#      echo "******************************************************************************"
+#      echo "Welcome to your workstation! You are now authenticated to the AWS account."
+#      echo "******************************************************************************"
+
+# Pre-install relevant VS Code extensions
+vscode:
+  extensions:
+    - amazonwebservices.aws-toolkit-vscode
+    - redhat.java
+    - rust-lang.rust-analyzer
