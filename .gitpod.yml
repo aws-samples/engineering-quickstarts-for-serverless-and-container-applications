@@ -11,6 +11,7 @@ tasks:
     command: echo "Hello Gitpod"
   - name: Python Deps Install
     command: |
+      python --version
       cd python
       # for each directory install python dependecies
       for d in */ ; do
