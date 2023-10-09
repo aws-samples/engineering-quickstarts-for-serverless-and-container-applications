@@ -34,9 +34,16 @@ tasks:
         cd ..
         echo $d
       done
-
-#tasks:
-#  - name: AWS Auth
+  - name: Rust Cargo Sync
+    command: |
+      cd rust
+      # for each directory do a quick little cargo build
+      for d in */ ; do
+        cd $d
+        cargo build --verbose
+        cd ..
+        echo $d
+      done
 
 
 # Pre-install relevant VS Code extensions
