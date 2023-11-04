@@ -240,7 +240,7 @@ def find_or_create_context_by_name(context_name):   # context name - CICD_WORKSH
 # Add Env vars to context
 
 print(add_circle_token_to_context_with_name('AWS', 'AWS_ACCESS_KEY_ID', AWS_ACCESS_KEY_ID))
-print(add_circle_token_to_context_with_name('AWS', 'AWS_SECRET_ACCESS_KEY', AWS_SECRET_ACCESS_KEY))d
+print(add_circle_token_to_context_with_name('AWS', 'AWS_SECRET_ACCESS_KEY', AWS_SECRET_ACCESS_KEY))
 print(add_circle_token_to_context_with_name('SNYK', 'SNYK_TOKEN', SNYK_TOKEN))
 
 ## Uncoment if you plan on using any of the 3rd party vendors listed below
