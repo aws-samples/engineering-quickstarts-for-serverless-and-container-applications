@@ -1,10 +1,10 @@
 version: 2.1
 
 orbs:
-  aws-cli: circleci/aws-cli@3.1.4
+  aws-cli: circleci/aws-cli@4.1.1
   ggshield: gitguardian/ggshield@1.1.4
   serverless-framework: circleci/serverless-framework@2.0.1
-  snyk: snyk/snyk@1.4.0
+  snyk: snyk/snyk@2.0.1
 
 workflows:
   build_and_deploy:
@@ -13,11 +13,11 @@ workflows:
           name: secrets_detection
           revision: $CIRCLE_SHA1
           context:
-            - test-dibs
+            - SYNK
       - static_analysis:
           name: sast
           context:
-            - test-dibs
+            - SNYK
           requires:
             - secrets_detection
       - test:
@@ -28,6 +28,8 @@ workflows:
             - test
       - deploy:
           name: deploy
+          context:
+            - AWS
           requires:
             - build
 
