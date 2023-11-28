@@ -61,12 +61,13 @@ jobs:
   test:
     docker:
       - image: cimg/python:3.9.16-node
-    working_directory: ~/python/powertools-sls/requirements.txt
+    working_directory: ~/../python/powertools-sls/requirements.txt
     steps:
       - checkout
       - run:
           name: Run unit tests
           command: |
+            ls -lah
             pip install -r requirements.txt
             pytest
   deploy:
