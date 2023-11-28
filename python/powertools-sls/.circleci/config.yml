@@ -40,7 +40,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install Deps
+          name: Install Dep
           command: pip install -r requirements.txt
   static_analysis:
     docker:
