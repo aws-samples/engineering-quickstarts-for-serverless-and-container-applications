@@ -43,8 +43,8 @@ jobs:
       - run:
           name: Install Deps
           command: |
-          ls -lah
-          pip install -r requirements.txt
+            ls -lah
+            pip install -r requirements.txt
   static_analysis:
     docker:
       - image: cimg/python:3.9.16-node
