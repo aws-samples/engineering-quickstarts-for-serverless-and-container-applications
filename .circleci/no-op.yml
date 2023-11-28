@@ -1,0 +1,15 @@
+version: 2.1
+
+jobs:
+  no-op:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run: echo "I should not run" && exit 1
+
+workflows:
+  no-op:
+    when: false
+    jobs:
+      - no-op

@@ -1,0 +1,67 @@
+version: 2.1
+
+setup: true
+
+orbs:
+  path-filtering: circleci/path-filtering@0.1.3
+  continuation: circleci/continuation@0.3.1
+
+commands:
+  set-continued-config:
+    parameters:
+      pipeline-parameters-json-file:
+        type: string
+        default: /tmp/pipeline-parameters.json
+      configuration-path:
+        type: string
+        default: .circleci/continue.yml
+      lookup-key:
+        type: string
+        description: key to look up the filepath for the next config
+    steps:
+      - run:
+          name: Set next config as << parameters.configuration-path >>
+          command: |
+            cp $(jq -r '.<< parameters.lookup-key >>' << parameters.pipeline-parameters-json-file >>) << parameters.configuration-path >>
+
+            # debug: confirm next config
+            cat << parameters.configuration-path >>
+      - run:
+          name: Pop << parameters.lookup-key >> key from << parameters.pipeline-parameters-json-file >>
+          command: |
+            jq 'del(.<< parameters.lookup-key >>)' << parameters.pipeline-parameters-json-file >> > params.json
+            rm << parameters.pipeline-parameters-json-file >>
+            cp params.json << parameters.pipeline-parameters-json-file >>
+
+            # debug: confirm contents
+            jq '.' << parameters.pipeline-parameters-json-file >>
+
+jobs:
+  filter:
+    executor: path-filtering/default
+    resource_class: small
+    steps:
+      - checkout
+      - path-filtering/set-parameters:
+          base-revision: main
+          # NOTE: path-filtering mapping is basic and can be limiting.
+          # - No comments allowed
+          # - Each line can only have 3 items, separated by space
+          # - No item in each line can have space in their value
+          mapping: |
+            .* config ".circleci/no-op.yml"
+            python/.* config "./python/powertools-sls/.circleci/config.yml"
+            java/.* config "./java/java-springboot-sls/.circleci/config.yml"
+      - set-continued-config:
+          lookup-key: config
+      - continuation/continue:
+          # NOTE: for CircleCI Server customers, please set circleci_domain
+          # See https://circleci.com/developer/orbs/orb/circleci/continuation#commands-continue
+          configuration_path: .circleci/continue.yml
+          # NOTE: this is the default output path of https://circleci.com/developer/orbs/orb/circleci/path-filtering#commands-set-parameters
+          parameters: /tmp/pipeline-parameters.json
+
+workflows:
+  setup:
+    jobs:
+      - filter
