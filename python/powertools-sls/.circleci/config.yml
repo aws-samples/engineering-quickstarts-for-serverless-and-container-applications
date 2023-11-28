@@ -48,12 +48,14 @@ jobs:
   static_analysis:
     docker:
       - image: cimg/python:3.9.16-node
-    working_directory: ~/python/powertools-sls/requirements.txt
+    working_directory: ~/../python/powertools-sls/requirements.txt
     steps:
-      - checkout
+      - checkout 
       - run:
           name: Install Deps
-          command: pip install -r requirements.txt
+          command: |
+            ls -lah
+            pip install -r requirements.txt
       - snyk/scan:
           severity-threshold: critical
   test:
