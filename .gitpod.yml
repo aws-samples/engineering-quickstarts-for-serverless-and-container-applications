@@ -1,0 +1,54 @@
+image:
+  file: .gitpod.Dockerfile
+
+github:
+  prebuilds:
+    master: true
+    addBadge: true
+
+tasks:
+  - name: AWS Auth
+    command: |
+      if [[ -z "${GP_AWS_CONNECTION_ARN}" ]]; then
+        echo "The GP_AWS_CONNECTION_ARN environment variable is not set or empty. You must set this to the ARN of the AWS role that should be granted to this workspace."
+        exit 1
+      else
+        echo "Authenticating to AWS account using the Gitpod Identity Provider..."
+        echo "AWS IAM Role: ${GP_AWS_CONNECTION_ARN}"
+      fi
+      gp idp login aws --role-arn $GP_AWS_CONNECTION_ARN
+      echo "Checking AWS identity..."
+      aws sts get-caller-identity
+      echo "******************************************************************************"
+      echo "Welcome to your workstation! You are now authenticated to the AWS account."
+      echo "******************************************************************************"
+
+  - name: Python Deps Install
+    command: |
+      python --version
+      cd python
+      # for each directory install python dependecies
+      for d in */ ; do
+        cd $d
+        pip install -r requirements.txt
+        cd ..
+        echo $d
+      done
+  - name: Rust Cargo Sync
+    command: |
+      cd rust
+      # for each directory do a quick little cargo build
+      for d in */ ; do
+        cd $d
+        cargo build --verbose
+        cd ..
+        echo $d
+      done
+
+
+# Pre-install relevant VS Code extensions
+vscode:
+  extensions:
+    - amazonwebservices.aws-toolkit-vscode
+    - redhat.java
+    - rust-lang.rust-analyzer
