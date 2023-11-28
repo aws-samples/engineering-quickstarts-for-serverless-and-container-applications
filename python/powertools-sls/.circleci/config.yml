@@ -13,11 +13,11 @@ workflows:
           name: secrets_detection
           revision: $CIRCLE_SHA1
           context:
-            - SYNK
+            - IDT
       - static_analysis:
           name: sast
           context:
-            - SNYK
+            - IDT
           requires:
             - secrets_detection
       - test:
@@ -37,14 +37,16 @@ jobs:
   build:
     docker:
       - image: cimg/python:3.9.16-node
+    working_directory: ~/python/powertools-sls/requirements.txt
     steps:
       - checkout
       - run:
-          name: Install Dep
+          name: Install Deps
           command: pip install -r requirements.txt
   static_analysis:
     docker:
       - image: cimg/python:3.9.16-node
+    working_directory: ~/python/powertools-sls/requirements.txt
     steps:
       - checkout
       - run:
@@ -55,6 +57,7 @@ jobs:
   test:
     docker:
       - image: cimg/python:3.9.16-node
+    working_directory: ~/python/powertools-sls/requirements.txt
     steps:
       - checkout
       - run:
