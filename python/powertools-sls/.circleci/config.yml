@@ -48,25 +48,27 @@ jobs:
   static_analysis:
     docker:
       - image: cimg/python:3.9.16-node
+    working_directory: ~/project/python/powertools-sls/
     steps:
       - checkout 
       - run:
           name: Install Deps to be Scanned
           command: |
             ls -lah
-            pip install -r ./python/powertools-sls/requirements.txt
+            pip install -r requirements.txt
       - snyk/scan:
           severity-threshold: critical
   test:
     docker:
       - image: cimg/python:3.9.16-node
+    working_directory: ~/project/python/powertools-sls/
     steps:
       - checkout
       - run:
           name: Run unit tests
           command: |
             ls -lah
-            pip install -r ./python/powertools-sls/requirements.txt
+            pip install -r requirements.txt
             pytest
   deploy:
     executor: serverless-framework/default
