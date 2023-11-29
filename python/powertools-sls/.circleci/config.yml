@@ -19,7 +19,7 @@ workflows:
           context:
             - IDT
           requires:
-            - "Static Code Analysis via Snyk"
+            - "Scanning for Secrets with GitGuardian"
       - test:
           name: Run PyTest against Application
       - build:
