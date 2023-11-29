@@ -18,8 +18,6 @@ workflows:
           name: Static Code Analysis via Snyk
           context:
             - IDT
-          requires:
-            - "Scanning for Secrets with GitGuardian"
       - test:
           name: Run PyTest against Application
           context:
@@ -47,6 +45,7 @@ jobs:
             pip install -r ./python/powertools-sls/requirements.txt
       - snyk/scan:
           severity-threshold: critical
+          additional-arguments: ./python/powertools-sls/
 
   test:
     docker:
