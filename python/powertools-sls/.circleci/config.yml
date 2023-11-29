@@ -45,7 +45,9 @@ jobs:
             pip install -r ./python/powertools-sls/requirements.txt
       - snyk/scan:
           severity-threshold: critical
-          additional-arguments: ./python/powertools-sls/
+          additional-arguments: ./python/powertools-sls/ --json-file-output=snyk.json
+      - store_artifacts:
+          path: snyk.json
 
   test:
     docker:
