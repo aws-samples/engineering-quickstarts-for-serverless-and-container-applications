@@ -72,9 +72,9 @@ jobs:
             python -m pytest tests/ --junitxml=results.xml
             ls -lah
       - store_test_results:
-          path: results.xml
+          path: ./python/powertools-sls/results.xml
       - store_artifacts:
-          path: results.xml
+          path: ./python/powertools-sls/results.xml
   deploy:
     executor: serverless-framework/default
     steps:
