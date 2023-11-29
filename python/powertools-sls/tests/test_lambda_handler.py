@@ -1,4 +1,4 @@
-from .src.handler import hello, hello_name
+from src.handler import hello, hello_name
 
 
 def test_hello():
