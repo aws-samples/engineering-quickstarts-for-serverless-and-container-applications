@@ -24,57 +24,50 @@ workflows:
           name: Run PyTest against Application
           context:
             - IDT
-      - build:
-          name: build
-          requires:
-            - "Run PyTest against Application"
       - deploy:
           name: deploy
           context:
             - AWS
           requires:
-            - build
+            - "Scanning for Secrets with GitGuardian"
+            - "Static Code Analysis via Snyk"
+            - "Run PyTest against Application"
+
 
 jobs:
-  build:
-    docker:
-      - image: cimg/python:3.9.16-node
-    steps:
-      - checkout 
-      - run:
-          name: Install Deps
-          command: |
-            ls -lah
-            pip install -r requirements.txt
-
   static_analysis:
     docker:
       - image: cimg/python:3.9.16-node
     steps:
       - checkout 
       - run:
-          name: Install Deps to be Scanned
+          name: Install Dependencies to be Scanned
           command: |
             ls -lah
             pip install -r ./python/powertools-sls/requirements.txt
       - snyk/scan:
           severity-threshold: critical
+
   test:
     docker:
       - image: cimg/python:3.9.16-node
     steps:
       - checkout
       - run:
-          name: Run unit tests
+          name: Install Dependencies
           command: |
             cd ./python/powertools-sls/
             pip install -r requirements.txt
+      - run:
+          name: Run Unit Tests
+          command: |
+            cd ./python/powertools-sls/
             python -m pytest tests/ --junitxml=results.xml
-            ls -lah
       - store_test_results:
           path: ./python/powertools-sls/results.xml
       - store_artifacts:
           path: ./python/powertools-sls/results.xml
+
   deploy:
     executor: serverless-framework/default
     steps:
