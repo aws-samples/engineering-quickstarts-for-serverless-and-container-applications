@@ -41,13 +41,11 @@ jobs:
       - run:
           name: Install Dependencies to be Scanned
           command: |
-            ls -lah
-            pip install -r ./python/powertools-sls/requirements.txt
+            cd ./python/powertools-sls/
+            pip install -r requirements.txt
       - snyk/scan:
           severity-threshold: critical
-          additional-arguments: ./python/powertools-sls/ --json-file-output=snyk.json
-      - store_artifacts:
-          path: snyk.json
+          additional-arguments: ./python/powertools-sls/
 
   test:
     docker:
