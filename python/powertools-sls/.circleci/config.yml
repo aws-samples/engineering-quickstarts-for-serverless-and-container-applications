@@ -23,9 +23,9 @@ workflows:
           context:
             - IDT
       - deploy:
-          name: deploy
+          name: Deploy Application to AWS Lambda
           context:
-            - AWS
+            - IDT
           requires:
             - "Scanning for Secrets with GitGuardian"
             - "Static Code Analysis via Snyk"
@@ -71,7 +71,11 @@ jobs:
     executor: serverless-framework/default
     steps:
       - checkout
-      - aws-cli/setup
+      - aws-cli/setup:
+          role_arn: "arn:aws:iam::483285841698:role/IDT-Demo"
+          profile_name: "OIDC-PROFILE"
+          role_session_name: "IDT-DEMO-<< pipeline.number >>"
+          session_duration: "1800"
       - serverless-framework/setup
       - run:
           name: Deploy to AWS Lambda
