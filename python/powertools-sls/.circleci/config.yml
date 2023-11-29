@@ -65,11 +65,9 @@ jobs:
       - run:
           name: Run unit tests
           command: |
-            ls -lah
             cd ./python/powertools-sls/
             pip install -r requirements.txt
-            ls -lah
-            pytest
+            python -m pytest tests/
   deploy:
     executor: serverless-framework/default
     steps:
