@@ -8,22 +8,16 @@ workflows:
   build_and_deploy:
     jobs:
       - ggshield/scan:
-          name: secrets_detection
+          name: Scanning for Secrets with GitGuardian
           revision: $CIRCLE_SHA1
           context:
-            - dobra
+            - IDT
       - static_analysis:
           context:
-            - dobra
-          matrix:
-            parameters:
-              target-file:
-                - pom.xml
-          requires:
-            - secrets_detection
+            - IDT
+          target-file: "pom.xml"
       - build:
-          requires:
-            - static_analysis
+          name: Build Java Application 
 
 jobs:
   build:
@@ -37,6 +31,7 @@ jobs:
             mvn -U clean package
       - store_artifacts:
           path: target
+
   static_analysis:
     parameters:
       target-file:
@@ -48,3 +43,4 @@ jobs:
       - snyk/scan:
           severity-threshold: high
           target-file: << parameters.target-file >>
+          additional-arguments: ./java/java-springboot-sls/
