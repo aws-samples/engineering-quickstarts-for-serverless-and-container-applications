@@ -10,18 +10,18 @@ workflows:
   build_and_deploy:
     jobs:
       - ggshield/scan:
-          name: secrets_detection
+          name: Scanning for Secrets with GitGuardian
           revision: $CIRCLE_SHA1
           context:
             - IDT
       - static_analysis:
-          name: sast
+          name: Static Code Analysis via Snyk
           context:
             - IDT
           requires:
             - secrets_detection
       - test:
-          name: test
+          name: Run PyTest against Application
       - build:
           name: build
           requires:
