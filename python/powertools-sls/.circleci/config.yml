@@ -22,6 +22,8 @@ workflows:
             - "Scanning for Secrets with GitGuardian"
       - test:
           name: Run PyTest against Application
+          context:
+            - IDT
       - build:
           name: build
           requires:
@@ -67,7 +69,12 @@ jobs:
           command: |
             cd ./python/powertools-sls/
             pip install -r requirements.txt
-            python -m pytest tests/
+            python -m pytest tests/ --junitxml=results.xml
+            ls -lah
+      - store_test_results:
+          path: results.xml
+      - store_artifacts:
+          path: results.xml
   deploy:
     executor: serverless-framework/default
     steps:
