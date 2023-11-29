@@ -19,13 +19,13 @@ workflows:
           context:
             - IDT
           requires:
-            - secrets_detection
+            - "Static Code Analysis via Snyk"
       - test:
           name: Run PyTest against Application
       - build:
           name: build
           requires:
-            - test
+            - "Run PyTest against Application"
       - deploy:
           name: deploy
           context:
