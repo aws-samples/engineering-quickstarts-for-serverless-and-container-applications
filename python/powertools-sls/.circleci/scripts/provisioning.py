@@ -20,44 +20,23 @@ def strip_spaces(obj):
 
 #Get data from toml file
 creds = toml.load('credentials.toml').get('keys')
-CIRCLE_TOKEN = strip_spaces(creds.get('circleci_token'))
-CIRCLECI_ORG_SLUG = strip_spaces(creds.get('circleci_org_slug'))
-CIRCLECI_VCS_USER = CIRCLECI_ORG_SLUG.rsplit('/',1)[1]  #Get the users vcs name from the slug
-CIRCLECI_ORG_ID = strip_spaces(creds.get('circleci_org_id'))
+CIRCLECI_TOKEN = strip_spaces(creds.get('CIRCLECI_TOKEN'))
+CIRCLECI_ORG_SLUG = strip_spaces(creds.get('CIRCLECI_ORG_SLUG'))
+CIRCLECI_VCS_USER = strip_spaces(creds.get('CIRCLECI_ORG_NAME'))
+CIRCLECI_ORG_ID = strip_spaces(creds.get('CIRCLECI_ORG_ID'))
 CIRCLECI_BASE_URL = strip_spaces('http://circleci.com/api/v2/')
-CIRCLECI_CONTEXT_NAME_PREFIX = strip_spaces('AWS_Demo')
+CIRCLECI_CONTEXT_NAME = strip_spaces('IDT')
 
 # Assign Variable the values from the respecive items in the toml file
-SNYK_TOKEN = strip_spaces(creds.get('snyk_token'))
-AWS_ACCESS_KEY_ID = strip_spaces(creds.get('AWS_ACCESS_KEY_ID'))
-AWS_SECRET_ACCESS_KEY = strip_spaces(creds.get('AWS_SECRET_ACCESS_KEY'))
-
-## UnComment theses if you plan on using any of these 3rd party vendors in your project
-# # Docker Hub 
-# DOCKER_LOGIN = strip_spaces(creds.get('docker_login'))
-# DOCKER_TOKEN = strip_spaces(creds.get('docker_token'))
-
-# # TF cloud
-# TF_CLOUD_API_HOST = 'https://app.terraform.io/api/v2'
-# TF_CLOUD_TOKEN = strip_spaces(creds.get('tf_cloud_token'))
-# TF_CLOUD_ORG_EMAIL = strip_spaces(creds.get('tf_cloud_org_email'))
-# TF_CLOUD_ORG_NAME = strip_spaces(creds.get('tf_cloud_org_name'))
-# TF_CLOUD_ORGANIZATION = f'{TF_CLOUD_ORG_NAME}-{CIRCLECI_VCS_USER}'   # Create a unique Org Name for TF Cloud
-# TF_CLOUD_WORKSPACE = strip_spaces(creds.get('tf_cloud_workspace'))
-
-# # Digital Ocean 
-# DIGITAL_OCEAN_TOKEN = strip_spaces(creds.get('digital_ocean_token'))
+GITGUARDIAN_API_KEY = strip_spaces(creds.get('GITGUARDIAN_API_KEY'))
+SNYK_TOKEN = strip_spaces(creds.get('SNYK_TOKEN'))
+AWS_DEFAULT_REGION = strip_spaces(creds.get('AWS_DEFAULT_REGION'))
+ANGEL_TEST = strip_spaces(creds.get('ANGEL_TEST'))
 
 REQUEST_HEADER = {
   'content-type': "application/json",
-  'Circle-Token': CIRCLE_TOKEN
+  'Circle-Token': CIRCLECI_TOKEN
 }
-
-## TF Cloud
-# TF_CLOUD_HEADERS = {
-#   'Authorization' : f'Bearer {TF_CLOUD_TOKEN}',
-#   'Content-Type': 'application/vnd.api+json'
-# }
 
 def get_circleci_api_request(endpoint, payload_dict):
   try:
@@ -122,7 +101,7 @@ def add_circle_token_to_context_with_name(context_name, env_var_name, env_var_va
     #Mask the secret values 
     masked_env_value = env_var_value[-4:] if len(env_var_value) > 4 else "***********"
     context = {
-                'Context Name':CIRCLECI_CONTEXT_NAME_PREFIX + context_name,
+                'Context Name':context_name,
                 'Environment Variable': env_var_name, 
                 'Environment Value' : f'****{masked_env_value}'
               }
@@ -134,7 +113,7 @@ def add_circle_token_to_context(context_id, env_var_name, env_var_value):
 
 # Get the context id to which we'll store env vars
 def find_or_create_context_by_name(context_name):   # context name - CICD_WORKSHOP_docker etc...
-  full_context_name = CIRCLECI_CONTEXT_NAME_PREFIX + context_name
+  full_context_name = context_name
   contexts = get_circleci_api_request(f'context?owner-id={CIRCLECI_ORG_ID}&owner-type=organization', None).get('items')
   context = next((ctx for ctx in contexts if ctx.get('name') == full_context_name), None)
   # print(f'Full Context Name: {context}')
@@ -151,143 +130,11 @@ def find_or_create_context_by_name(context_name):   # context name - CICD_WORKSH
   circleci_context_id = context.get('id')
   return circleci_context_id
 
-# # Terraform Cloud code blocks
-# def get_tf_cloud_org(end_point, tfc_headers, org_name):
-#   try:
-#     req = f'{end_point}/organizations/{org_name}'
-#     resp = requests.get(req, headers=tfc_headers)
-#     status_code =resp.status_code
-#     resp = resp.json()
-#     resp['status_code'] = status_code
-#     return resp 
-#   except requests.exceptions.HTTPError as errh:
-#     print ("Http Error:",errh)
-#   except requests.exceptions.ConnectionError as errc:
-#     print ("Error Connecting:",errc)
-#   except requests.exceptions.Timeout as errt:
-#     print ("Timeout Error:",errt)
-#   except requests.exceptions.RequestException as err:
-#     print ("OOps: Something Else",err)
-
-# def post_tf_cloud_org(end_point, tfc_headers, org_name, email):
-#   try:
-#     req = f'{end_point}/organizations'
-#     pay_load = {
-#       'data': {
-#         'type': 'organizations',
-#         'attributes': {
-#           'name': f'{org_name}',
-#           'email': f'{email}'}
-#         }
-#     }
-#     resp = requests.post(req, headers=tfc_headers, json=pay_load)
-#     status_code =resp.status_code
-#     resp = resp.json()
-#     resp['status_code'] = status_code
-#     return resp 
-#   except requests.exceptions.HTTPError as errh:
-#     print ("Http Error:",errh)
-#   except requests.exceptions.ConnectionError as errc:
-#     print ("Error Connecting:",errc)
-#   except requests.exceptions.Timeout as errt:
-#     print ("Timeout Error:",errt)
-#   except requests.exceptions.RequestException as err:
-#    print ("OOps: Something Else",err)
-
-# def get_tf_workspace(end_point, tfc_headers, org_name, workspace_name):
-#   try:
-#     req = f'{end_point}/organizations/{org_name}/workspaces/{workspace_name}'
-#     resp = requests.get(req, headers=tfc_headers)
-#     status_code =resp.status_code
-#     resp = resp.json()
-#     resp['status_code'] = status_code
-#     return resp 
-#   except requests.exceptions.HTTPError as errh:
-#     print ("Http Error:",errh)
-#   except requests.exceptions.ConnectionError as errc:
-#     print ("Error Connecting:",errc)
-#   except requests.exceptions.Timeout as errt:
-#     print ("Timeout Error:",errt)
-#   except requests.exceptions.RequestException as err:
-#     print ("OOps: Something Else",err)
-
-# def post_tf_workspaces(end_point, tfc_headers, org_name, workspace_name, execution_mode):
-#   try:
-#     req = f'{end_point}/organizations/{org_name}/workspaces'
-#     pay_load = {
-#       'data': {
-#         'type': 'workspaces',
-#         'attributes': {
-#           'name': workspace_name,
-#           'execution-mode':execution_mode
-#         }
-#       }
-#     }
-#     resp = requests.post(req, headers=tfc_headers, json=pay_load)
-#     status_code =resp.status_code
-#     resp = resp.json()
-#     resp['status_code'] = status_code
-#     return resp 
-#   except requests.exceptions.HTTPError as errh:
-#     print ("Http Error:",errh)
-#   except requests.exceptions.ConnectionError as errc:
-#     print ("Error Connecting:",errc)
-#   except requests.exceptions.Timeout as errt:
-#     print ("Timeout Error:",errt)
-#   except requests.exceptions.RequestException as err:
-#    print ("OOps: Something Else",err)  
-
 # Add Env vars to context
-
-print(add_circle_token_to_context_with_name('AWS', 'AWS_ACCESS_KEY_ID', AWS_ACCESS_KEY_ID))
-print(add_circle_token_to_context_with_name('AWS', 'AWS_SECRET_ACCESS_KEY', AWS_SECRET_ACCESS_KEY))
-print(add_circle_token_to_context_with_name('SNYK', 'SNYK_TOKEN', SNYK_TOKEN))
-
-## Uncoment if you plan on using any of the 3rd party vendors listed below
-# print(add_circle_token_to_context_with_name('TERRAFORM_CLOUD', 'TF_CLOUD_TOKEN', TF_CLOUD_TOKEN))
-# print(add_circle_token_to_context_with_name('TERRAFORM_CLOUD', 'TF_CLOUD_ORG_EMAIL', TF_CLOUD_ORG_EMAIL))
-# print(add_circle_token_to_context_with_name('TERRAFORM_CLOUD', 'TF_CLOUD_ORGANIZATION', TF_CLOUD_ORGANIZATION))
-# print(add_circle_token_to_context_with_name('TERRAFORM_CLOUD', 'TF_CLOUD_WORKSPACE', TF_CLOUD_WORKSPACE))
-# print(add_circle_token_to_context_with_name('DOCKER', 'DOCKER_LOGIN', DOCKER_LOGIN))
-# print(add_circle_token_to_context_with_name('DIGITAL_OCEAN', 'DIGITAL_OCEAN_TOKEN', DIGITAL_OCEAN_TOKEN))
-# print(add_circle_token_to_context_with_name('DOCKER', 'DOCKER_PASSWORD', DOCKER_TOKEN))
-
-
-## Uncoment these code blocks if you intend to use TF Cloud 
-
-# #Create Terraform Cloud Assets
-# tf_response = get_tf_cloud_org(TF_CLOUD_API_HOST, TF_CLOUD_HEADERS, TF_CLOUD_ORGANIZATION)
-# print(f'Creating the new Terraform Cloud Organization: {TF_CLOUD_ORGANIZATION}')
-# if tf_response.get('status_code') == 200:
-#   org_name = tf_response['data']['attributes'].get('name')
-#   print(f'The {org_name} already exists no further action taken.')
-#   # print(f'The {TF_CLOUD_ORGANIZATION} already exists.')
-# else:  # Create the org
-#   resp = post_tf_cloud_org(TF_CLOUD_API_HOST, TF_CLOUD_HEADERS, TF_CLOUD_ORGANIZATION, TF_CLOUD_ORG_EMAIL)
-#   if resp.get('status_code') == 201:
-#       org_name = resp['data']['attributes'].get('name')
-#       print(f'Successfully created the {org_name} organization in Terraform cloud')
-#   else:
-#     print(f'Error: {resp.json()}')
-
-# org_exists = get_tf_cloud_org(TF_CLOUD_API_HOST, TF_CLOUD_HEADERS, TF_CLOUD_ORGANIZATION)
-# if org_exists.get('status_code') == 200:
-#   # create workspaces
-#   org_name = org_exists['data']['attributes'].get('name')
-
-#   ws = [TF_CLOUD_WORKSPACE, f'{TF_CLOUD_WORKSPACE}-deployment']
-#   for w in ws:
-#       print(f'Creating workspace: {w}')
-#       resp = post_tf_workspaces(TF_CLOUD_API_HOST,TF_CLOUD_HEADERS,org_name,w,'local')
-#       if resp.get('status_code') == 201:
-#         print(f'Successfully created workspace: {w} in the {org_name} organization')
-#       elif resp.get('status_code') == 422:
-#         print(f'Workspace name: {w} already exists in the {org_name} organization.')
-#       else:
-#         print(f'{resp}')
-# else:
-#   print(f'Error: The {org_name} does not exist.')
-      
+print(add_circle_token_to_context_with_name(CIRCLECI_CONTEXT_NAME, 'GITGUARDIAN_API_KEY', GITGUARDIAN_API_KEY))
+print(add_circle_token_to_context_with_name(CIRCLECI_CONTEXT_NAME, 'SNYK_TOKEN', SNYK_TOKEN))
+print(add_circle_token_to_context_with_name(CIRCLECI_CONTEXT_NAME, 'AWS_DEFAULT_REGION', AWS_DEFAULT_REGION))
+print(add_circle_token_to_context_with_name(CIRCLECI_CONTEXT_NAME, 'ANGEL_TEST', ANGEL_TEST))
 
 # # Warning uncommenting the code block below will delete all the contexts created above
 # # To delete the values from CircleCI contexts uncomment the lines below
