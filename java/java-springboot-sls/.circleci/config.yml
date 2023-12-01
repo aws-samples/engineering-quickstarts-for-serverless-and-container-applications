@@ -1,29 +1,34 @@
 version: 2.1
 
 orbs:
+  aws-cli: circleci/aws-cli@4.1.1
   ggshield: gitguardian/ggshield@1.1.4
-  snyk: snyk/snyk@1.4.0
+  serverless-framework: circleci/serverless-framework@2.0.1
+  snyk: snyk/snyk@2.0.1
 
 workflows:
   build_and_deploy:
     jobs:
       - ggshield/scan:
-          name: secrets_detection
+          name: Scanning for Secrets with GitGuardian
           revision: $CIRCLE_SHA1
           context:
-            - dobra
+            - IDT
       - static_analysis:
+          name: Static Code Analysis via Snyk
           context:
-            - dobra
-          matrix:
-            parameters:
-              target-file:
-                - pom.xml
-          requires:
-            - secrets_detection
+            - IDT
+          target-file: "pom.xml"
       - build:
+          name: Build Java Application
+      - deploy:
+          name: Deploy Application to AWS Lambda
+          context:
+            - IDT
           requires:
-            - static_analysis
+            - "Scanning for Secrets with GitGuardian"
+            - "Static Code Analysis via Snyk"
+            - "Build Java Application"
 
 jobs:
   build:
@@ -34,9 +39,11 @@ jobs:
       - run:
           name: Build JAR
           command: |
+            cd ./java/java-springboot-sls/
             mvn -U clean package
       - store_artifacts:
           path: target
+
   static_analysis:
     parameters:
       target-file:
@@ -48,3 +55,18 @@ jobs:
       - snyk/scan:
           severity-threshold: high
           target-file: << parameters.target-file >>
+          additional-arguments: ./java/java-springboot-sls/
+
+  deploy:
+    executor: serverless-framework/default
+    steps:
+      - checkout
+      - aws-cli/setup:
+          role_arn: "arn:aws:iam::483285841698:role/IDT-Demo"
+          profile_name: "OIDC-PROFILE"
+          role_session_name: "IDT-DEMO-<< pipeline.number >>"
+          session_duration: "1800"
+      - serverless-framework/setup
+      - run:
+          name: Deploy to AWS Lambda
+          command: serverless deploy -v

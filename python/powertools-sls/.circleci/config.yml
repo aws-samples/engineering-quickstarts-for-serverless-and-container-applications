@@ -1,70 +1,81 @@
 version: 2.1
 
 orbs:
-  aws-cli: circleci/aws-cli@3.1.4
+  aws-cli: circleci/aws-cli@4.1.1
   ggshield: gitguardian/ggshield@1.1.4
   serverless-framework: circleci/serverless-framework@2.0.1
-  snyk: snyk/snyk@1.4.0
+  snyk: snyk/snyk@2.0.1
 
 workflows:
   build_and_deploy:
     jobs:
       - ggshield/scan:
-          name: secrets_detection
+          name: Scanning for Secrets with GitGuardian
           revision: $CIRCLE_SHA1
           context:
-            - test-dibs
+            - IDT
       - static_analysis:
-          name: sast
+          name: Static Code Analysis via Snyk
           context:
-            - test-dibs
-          requires:
-            - secrets_detection
+            - IDT
       - test:
-          name: test
-      - build:
-          name: build
-          requires:
-            - test
+          name: Run PyTest against Application
+          context:
+            - IDT
       - deploy:
-          name: deploy
+          name: Deploy Application to AWS Lambda
+          context:
+            - IDT
           requires:
-            - build
+            - "Scanning for Secrets with GitGuardian"
+            - "Static Code Analysis via Snyk"
+            - "Run PyTest against Application"
+
 
 jobs:
-  build:
-    docker:
-      - image: cimg/python:3.9.16-node
-    steps:
-      - checkout
-      - run:
-          name: Install Deps
-          command: pip install -r requirements.txt
   static_analysis:
     docker:
       - image: cimg/python:3.9.16-node
     steps:
-      - checkout
+      - checkout 
       - run:
-          name: Install Deps
-          command: pip install -r requirements.txt
+          name: Install Dependencies to be Scanned
+          command: |
+            cd ./python/powertools-sls/
+            pip install -r requirements.txt
       - snyk/scan:
           severity-threshold: critical
+          additional-arguments: ./python/powertools-sls/
+
   test:
     docker:
       - image: cimg/python:3.9.16-node
     steps:
       - checkout
       - run:
-          name: Run unit tests
+          name: Install Dependencies
           command: |
+            cd ./python/powertools-sls/
             pip install -r requirements.txt
-            pytest
+      - run:
+          name: Run Unit Tests
+          command: |
+            cd ./python/powertools-sls/
+            python -m pytest tests/ --junitxml=results.xml
+      - store_test_results:
+          path: ./python/powertools-sls/results.xml
+      - store_artifacts:
+          path: ./python/powertools-sls/results.xml
+
   deploy:
     executor: serverless-framework/default
     steps:
       - checkout
-      - aws-cli/setup
+      - aws-cli/setup:
+          role_arn: "arn:aws:iam::483285841698:role/IDT-Demo"
+          profile_name: "OIDC-PROFILE"
+          role_session_name: "IDT-DEMO-<< pipeline.number >>"
+          session_duration: "1800"
       - serverless-framework/setup
       - run:
           name: Deploy to AWS Lambda
