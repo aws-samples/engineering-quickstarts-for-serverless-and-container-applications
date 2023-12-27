@@ -1,5 +1,7 @@
 # AWS DevOps in a Box (DiBs) Python, Powertools, Serverless Template
 
+## See IDT_Readme in root folder for the full instructions. ##
+
 This repository contains a template for creating serverless applications using
 Python, Lambda Powertools, and Serverless Framework. It also includes a CI/CD
 pipeline using CircleCI to automate the deployment of your application to AWS.

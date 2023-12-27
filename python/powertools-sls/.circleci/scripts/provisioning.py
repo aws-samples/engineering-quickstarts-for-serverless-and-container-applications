@@ -22,7 +22,7 @@ def strip_spaces(obj):
 creds = toml.load('credentials.toml').get('keys')
 CIRCLECI_TOKEN = strip_spaces(creds.get('CIRCLECI_TOKEN'))
 CIRCLECI_ORG_SLUG = strip_spaces(creds.get('CIRCLECI_ORG_SLUG'))
-CIRCLECI_VCS_USER = strip_spaces(creds.get('CIRCLECI_ORG_NAME'))
+#CIRCLECI_VCS_USER = strip_spaces(creds.get('CIRCLECI_ORG_NAME'))
 CIRCLECI_ORG_ID = strip_spaces(creds.get('CIRCLECI_ORG_ID'))
 CIRCLECI_BASE_URL = strip_spaces('http://circleci.com/api/v2/')
 CIRCLECI_CONTEXT_NAME = strip_spaces('IDT')
@@ -31,7 +31,7 @@ CIRCLECI_CONTEXT_NAME = strip_spaces('IDT')
 GITGUARDIAN_API_KEY = strip_spaces(creds.get('GITGUARDIAN_API_KEY'))
 SNYK_TOKEN = strip_spaces(creds.get('SNYK_TOKEN'))
 AWS_DEFAULT_REGION = strip_spaces(creds.get('AWS_DEFAULT_REGION'))
-ANGEL_TEST = strip_spaces(creds.get('ANGEL_TEST'))
+#ANGEL_TEST = strip_spaces(creds.get('ANGEL_TEST'))
 
 REQUEST_HEADER = {
   'content-type': "application/json",
@@ -134,7 +134,6 @@ def find_or_create_context_by_name(context_name):   # context name - CICD_WORKSH
 print(add_circle_token_to_context_with_name(CIRCLECI_CONTEXT_NAME, 'GITGUARDIAN_API_KEY', GITGUARDIAN_API_KEY))
 print(add_circle_token_to_context_with_name(CIRCLECI_CONTEXT_NAME, 'SNYK_TOKEN', SNYK_TOKEN))
 print(add_circle_token_to_context_with_name(CIRCLECI_CONTEXT_NAME, 'AWS_DEFAULT_REGION', AWS_DEFAULT_REGION))
-print(add_circle_token_to_context_with_name(CIRCLECI_CONTEXT_NAME, 'ANGEL_TEST', ANGEL_TEST))
 
 # # Warning uncommenting the code block below will delete all the contexts created above
 # # To delete the values from CircleCI contexts uncomment the lines below
