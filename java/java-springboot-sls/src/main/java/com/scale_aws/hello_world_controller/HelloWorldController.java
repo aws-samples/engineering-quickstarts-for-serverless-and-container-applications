@@ -4,6 +4,7 @@ import com.scale_aws.hello_world_model.Item;
 import org.apache.logging.log4j.Logger;
 import com.scale_aws.ApiGatewayResponse;
 import org.apache.logging.log4j.LogManager;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,9 +20,9 @@ public class HelloWorldController {
 
     private static final DynamoDbEnhancedClient dbClient = DynamoDbEnhancedClient.create();
 
-    @RequestMapping(path = "/hello/<name>", method = RequestMethod.GET)
-    public ApiGatewayResponse helloName(@RequestBody String name) {
-        logger.info("Serving /hello");
+    @RequestMapping(path = "/hello/{name}", method = RequestMethod.GET)
+    public ApiGatewayResponse helloName(@PathVariable String name) {
+    logger.info("Serving /hello");
 
         ApiGatewayResponse.Builder responder = ApiGatewayResponse.builder();
 
